@@ -10,8 +10,8 @@ module Griddler
       # Set your application's logger
       # @example In a Rails initializer:
       #    Griddler::Mandrill::Logging.logger = Rails.logger
-      # @example In Rails while logging a different level than the default logger
-      #    Griddler::Mandrill::Logging.logger = ActiveSupport::Logger.new(Rails.logger, level: :debug)
+      # @example Logging to the same location Rails does, but at a different log level
+      #    Griddler::Mandrill::Logging.logger = ActiveSupport::Logger.new(Rails.logger.instance_variable_get("@logdev"), level: :debug)
       def self.logger=(logger)
         @logger = logger
       end

@@ -37,6 +37,29 @@ Once you have correctly configured Mandrill, you can go ahead and delete this co
 
 [Adding Routes]: http://help.mandrill.com/entries/21699367-Inbound-Email-Processing-Overview
 
+#### Allowing domains without SPF configured
+Sometimes, due to circumstances outside our control, a domain may not have SPF set up or configured incorrectly.
+
+If that is causing you to miss emails; you may configure the adapter to allow those results through to your applications email processor.
+
+Please see [RFC4408 Section 2.5](https://tools.ietf.org/html/rfc4408#section-2.5) to determine whether your particular use case conforms to the SPF standard.
+```
+# Allow messages from domains without SPF configured
+Griddler::Mandrill.spf_allow.add(:none)
+
+# Allow messages from domains where SPF is erroring temporarily
+Griddler::Mandrill.spf_allow.add(:temperror)
+
+# Allow messages from domains where SPF is erroring permanently
+Griddler::Mandrill.spf_allow.add(:permerror)
+
+# Allow messages from domains where SPF is soft-failing
+Griddler::Mandrill.spf_allow.add(:softfail)
+
+# Allow messages from domains where SPF is failing
+Griddler::Mandrill.spf_allow.add(:fail)
+```
+
 ## Credits
 
 Griddler::Mandrill was extracted from Griddler by [Stafford Brunk](https://github.com/wingrunr21).

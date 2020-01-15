@@ -14,7 +14,7 @@ module Griddler
       def normalize_params
         logger.debug(message: "entered #normalize_params", events: events)
         events.select do |event|
-          event[:spf].present? && (event[:spf][:result] == 'pass' || event[:spf][:result] == 'neutral')
+          spf_filter.passes?(event)
         end.map do |event|
           {
             to: recipients(:to, event),
@@ -94,6 +94,10 @@ module Griddler
         tempfile.write(content)
         tempfile.rewind
         tempfile
+      end
+
+      def spf_filter
+        @spf_filter ||= SpfFilter.new
       end
     end
   end

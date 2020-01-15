@@ -12,6 +12,7 @@ module Griddler
       end
 
       def normalize_params
+        logger.debug(message: "entered #normalize_params", events: events)
         events.select do |event|
           event[:spf].present? && (event[:spf][:result] == 'pass' || event[:spf][:result] == 'neutral')
         end.map do |event|
@@ -30,6 +31,12 @@ module Griddler
             spam_report: event[:spam_report]
           }
         end
+      end
+
+      protected
+
+      def logger
+        Logging.logger
       end
 
       private

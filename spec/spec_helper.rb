@@ -1,3 +1,4 @@
+require 'griddler'
 require 'griddler/testing'
 require 'griddler/mandrill'
 require 'action_dispatch'
@@ -10,6 +11,13 @@ RSpec.configure do |config|
   config.include Griddler::Testing
 end
 
+
+class Griddler::Testing::UploadedImage
+  def fixture_file
+    cwd = File.expand_path File.dirname(__FILE__)
+    File.new(File.join(cwd, 'fixtures', @name))
+  end
+end
 RSpec::Matchers.define :be_normalized_to do |expected|
   failure_message do |actual|
     message = ""

@@ -132,10 +132,10 @@ describe Griddler::Mandrill::Adapter, '.normalize_params' do
 
     context 'when the adapter is configured to allow none' do
       before do
-        Griddler::Mandrill::Adapter.allow_spf_none = true
+        Griddler::Mandrill.allow_spf_none = true
       end
       after do
-        Griddler::Mandrill::Adapter.allow_spf_none = false
+        Griddler::Mandrill.allow_spf_none = false
       end
       it 'includes the message' do
         params = default_params(@params)
@@ -151,10 +151,79 @@ describe Griddler::Mandrill::Adapter, '.normalize_params' do
       @params.first[:msg][:spf] = { result: 'softfail', detail: 'domain owner discourages use of this host' }
     end
 
-    it "doesn't include emails that have failed the SPF test" do
+    it "does not include the emails by default" do
       params = default_params(@params)
       normalized_params = Griddler::Mandrill::Adapter.normalize_params(params)
       expect(normalized_params).to be_empty
+    end
+
+    context 'when the adapter is configured to allow softfail' do
+      before do
+        Griddler::Mandrill.spf_allow.add(:softfail)
+      end
+      after do
+        Griddler::Mandrill.spf_allow.delete(:softfail)
+      end
+      it 'includes the message' do
+        params = default_params(@params)
+        normalized_params = Griddler::Mandrill::Adapter.normalize_params(params)
+        expect(normalized_params).not_to be_empty
+      end
+    end
+  end
+
+  describe 'when the spf record is temperror' do
+    before do
+      @params = params_hash
+      @params.first[:msg][:spf] = { result: 'temperror', detail: 'sender SPF temperror' }
+    end
+
+    it "drops the email by default" do
+      params = default_params(@params)
+      normalized_params = Griddler::Mandrill::Adapter.normalize_params(params)
+      expect(normalized_params).to be_empty
+    end
+
+    context 'when the adapter is configured to allow temperror' do
+      before do
+        Griddler::Mandrill.spf_allow.add(:temperror)
+      end
+      after do
+        Griddler::Mandrill.spf_allow.delete(:temperror)
+      end
+
+      it 'includes the message' do
+        params = default_params(@params)
+        normalized_params = Griddler::Mandrill::Adapter.normalize_params(params)
+        expect(normalized_params).not_to be_empty
+      end
+    end
+  end
+
+  describe 'when the spf record is permerror' do
+    before do
+      @params = params_hash
+      @params.first[:msg][:spf] = { result: 'permerror', detail: 'sender SPF permerror' }
+    end
+
+    it "drops the email by default" do
+      params = default_params(@params)
+      normalized_params = Griddler::Mandrill::Adapter.normalize_params(params)
+      expect(normalized_params).to be_empty
+    end
+
+    context 'when the adapter is configured to allow permerror' do
+      before do
+        Griddler::Mandrill.spf_allow.add(:permerror)
+      end
+      after do
+        Griddler::Mandrill.spf_allow.delete(:permerror)
+      end
+      it 'includes the message' do
+        params = default_params(@params)
+        normalized_params = Griddler::Mandrill::Adapter.normalize_params(params)
+        expect(normalized_params).not_to be_empty
+      end
     end
   end
 
@@ -168,6 +237,20 @@ describe Griddler::Mandrill::Adapter, '.normalize_params' do
       params = default_params(@params)
       normalized_params = Griddler::Mandrill::Adapter.normalize_params(params)
       expect(normalized_params).to be_empty
+    end
+
+    context 'when the adapter is configured to allow fail' do
+      before do
+        Griddler::Mandrill.spf_allow.add(:fail)
+      end
+      after do
+        Griddler::Mandrill.spf_allow.delete(:fail)
+      end
+      it 'includes the message' do
+        params = default_params(@params)
+        normalized_params = Griddler::Mandrill::Adapter.normalize_params(params)
+        expect(normalized_params).not_to be_empty
+      end
     end
   end
 

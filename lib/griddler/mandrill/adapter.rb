@@ -33,7 +33,9 @@ module Griddler
         end
       end
 
-      protected def logger
+      protected
+
+      def logger
         Logging.logger
       end
 

@@ -132,10 +132,10 @@ describe Griddler::Mandrill::Adapter, '.normalize_params' do
 
     context 'when the adapter is configured to allow none' do
       before do
-        Griddler::Mandrill.allow_spf_none = true
+        Griddler::Mandrill.spf_allow.add(:none)
       end
       after do
-        Griddler::Mandrill.allow_spf_none = false
+        Griddler::Mandrill.spf_allow.delete(:none)
       end
       it 'includes the message' do
         params = default_params(@params)

@@ -1,3 +1,4 @@
+require 'tempfile'
 module Griddler
   module Mandrill
     class Adapter

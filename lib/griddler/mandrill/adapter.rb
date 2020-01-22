@@ -35,6 +35,7 @@ module Griddler
 
       protected
 
+      # @return [Logger]
       def logger
         Logging.logger
       end
